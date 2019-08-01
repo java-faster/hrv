@@ -2,41 +2,52 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>年中获得问卷调查</title>
 </head>
-<body>
-<p>你好，
-    <span th:text="${name}"></span>童鞋，欢迎加入XXX大家庭！您的入职信息如下：</p>
-<table border="1" cellspacing="0">
-    <tr>
-        <td><strong style="color: #F00">工号</strong></td>
-        <td th:text="${workID}"></td>
-    </tr>
-    <tr>
-        <td><strong style="color: #F00">合同期限</strong></td>
-        <td th:text="${contractTerm}+'年'"></td>
-    </tr>
-    <tr>
-        <td><strong style="color: #F00">合同起始日期</strong></td>
-        <td th:text="${#dates.format(beginContract, 'yyyy-MM-dd')}"></td>
-    </tr>
-    <tr>
-        <td><strong style="color: #F00">合同截至日期</strong></td>
-        <td th:text="${#dates.format(endContract, 'yyyy-MM-dd')}"></td>
-    </tr>
-    <tr>
-        <td><strong style="color: #F00">所属部门</strong></td>
-        <td th:text="${departmentName}"></td>
-    </tr>
-    <tr>
-        <td><strong style="color: #F00">职位</strong></td>
-        <td th:text="${posName}"></td>
-    </tr>
-</table>
-<p>
-    <strong style="color: #F00; font-size: 24px;">
-        希望在未来的日子里，携手共进!
-    </strong>
-</p>
+<body id="login">
+<div id="header">
+    <h1>年中获得问卷调查</h1>
+</div>
+<div id="content">
+
+    <div id="login-box">
+        <div class="way lg-account">
+
+            <form id="account-form" method="post">
+                <div>
+                    <label for="username">被调查人</label>
+                    <input type="text" name="username" id="username" placeholder="请输入姓名">
+                </div>
+                <div>
+                    <label for="address">出行地点</label>
+                    <select id="address">
+                        <option value="上海">上海</option>
+                        <option value="嘉兴">嘉兴</option>
+                    </select>
+                    <label for="time">出行时间</label>
+                    <select id="time">
+                        <option value="8.24">8.24</option>
+                        <option value="8.31">8.31</option>
+                        <option value="9.7">9.7</option>
+                    </select>
+                    <label for="size">衣服尺寸</label>
+                    <select id="size">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="2XL">2XL</option>
+                        <option value="3XL">3XL</option>
+                    </select>
+                </div>
+                <input type="button" id="lg-btn" name="submit" value="提交">
+                <input type="hidden" name="submitted" value="true">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/SHA1.js"></script>
+<script type="text/javascript" src="js/form.js"></script>
 </body>
 </html>

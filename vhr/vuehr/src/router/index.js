@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import Home from '@/components/Home'
+import Question from '@/components/Question'
 import Chat from '@/components/chat/Chat'
 // import EmpAdv from '@/components/emp/EmpAdv'
 // import EmpBasic from '@/components/emp/EmpBasic'
@@ -35,7 +36,12 @@ export default new Router({
       name: 'Login',
       component: Login,
       hidden: true
-    }, {
+    },{
+      path: '/Question',
+      name: 'Question',
+      component: Question,
+      hidden: true
+    },{
       path: '/home',
       name: '主页',
       component: Home,
@@ -56,5 +62,6 @@ export default new Router({
         }
       ]
     }
-  ]
+  ],
+  mode: "history"
 })

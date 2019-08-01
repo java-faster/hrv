@@ -13,6 +13,7 @@ module.exports = {
     proxyTable: {
       '/': {
         target: 'http://localhost:8082',
+        //target: 'http://170.101.103.33:8082',
         changeOrigin: true,
         pathRewrite: {
           '^/': ''

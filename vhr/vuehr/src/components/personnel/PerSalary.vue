@@ -2,7 +2,7 @@
   <div>
   <el-container>
     <el-header  style="text-align: left; font-size: 30px ;align-items: center;padding: 0px" >
-      <el-button type="primary" size="mini" icon="el-icon-plus"  @click="dialogVisible = true">添加</el-button>
+      <el-button type="primary" size="mini" icon="el-icon-plus"  @click="addTableContent">添加</el-button>
       <el-button type="success" size="mini"  icon="el-icon-download"  @click="dialogVisible = true">导出</el-button>
       <el-button type="success" size="mini"  icon="el-icon-upload"  @click="dialogVisible = true">导入</el-button>
     </el-header>
@@ -10,7 +10,7 @@
       <el-table :data="tableDatas" border stripe style="width: 100%" v-loading="tableLoading">
         <el-table-column type="selection" align="left" width="30"></el-table-column>
         <el-table-column fixed align="left" prop="name" label="员工姓名" width="180"></el-table-column>
-        <el-table-column align="left"  label="调薪日期" width="180" ><template slot-scope="scope">{{ scope.row.asDate | formatDate}}</template></el-table-column>
+        <el-table-column align="left"  label="调薪日期" width="180" ><template slot-scope="scope">{{scope.row.asDate|formatDate}}</template></el-table-column>
         <el-table-column align="left" prop="beforeSalary" label="调薪前薪资"></el-table-column>
         <el-table-column align="left" prop="afterSalary" label="调薪后薪资"></el-table-column>
         <el-table-column align="left" prop="reason" label="调薪原因"></el-table-column>
@@ -42,7 +42,7 @@
           </el-form-item>
 
           <el-form-item label="调后薪资" >
-            <el-input-number v-model="num" controls-position="right" @change="handleChange" :min="1" style="width: 50%" ></el-input-number>
+            <el-input v-model="tableData.afterSalary"  style="width: 50%" ></el-input>
           </el-form-item>
 
             <el-form-item label="调整原因" >
@@ -73,7 +73,6 @@
     data() {
       return {
         tableDatas: [],
-        num: 4000,
         dialogVisible: false,
         tableLoading:false,
         tableData: {
@@ -84,7 +83,7 @@
           beforeSalary:'',
           reason:'',
           remark:'',
-          ssDate:''
+          asDate:''
         }
       }
     },
@@ -113,9 +112,18 @@
         console.log(value);
       },
       showTableContent(row){
-        dialogVisible = true;
         this.tableData=row;
         this.tableData.name=row.name;
+        this.tableData.reason=row.reason;
+        this.tableData.ssDate=row.asDate;
+        this.tableData.afterSalary=row.afterSalary;
+        this.tableData.beforeSalary=row.beforeSalary;
+        this.dialogVisible = true;
+
+      },
+      addTableContent(){
+        this.tableData="";
+        this.dialogVisible = true;
       }
     },
     mounted:function () {

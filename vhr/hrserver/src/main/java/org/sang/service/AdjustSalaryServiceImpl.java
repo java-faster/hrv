@@ -1,10 +1,12 @@
 package org.sang.service;
 
 import org.sang.bean.AdjustSalary;
+import org.sang.common.poi.DateUtils;
 import org.sang.mapper.AdjustSalaryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -23,11 +25,14 @@ public class AdjustSalaryServiceImpl implements AdjustSalaryService {
 
     @Override
     public List<AdjustSalary> getAllAdjustSalaryList() {
-//        List<AdjustSalary> orginList=adjustSalaryMapper.queryAllAdjustSalaryList();
-//        for (AdjustSalary orgin : orginList ) {
-//
-//            orgin.setAsDate(LocalDate.parse(orgin.getAsDate());
-//        }
-        return adjustSalaryMapper.queryAllAdjustSalaryList();
+        List<AdjustSalary> orginList=adjustSalaryMapper.queryAllAdjustSalaryList();
+        for (AdjustSalary orgin : orginList ) {
+            try {
+                orgin.setAsDate(DateUtils.getYYYYddmm(orgin.getAsDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return orginList;
     }
 }

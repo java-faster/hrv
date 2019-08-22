@@ -873,7 +873,6 @@
         })
       },
       showEditEmpView(row){
-        console.log(row)
         this.dialogTitle = "编辑员工";
         this.emp = row;
         this.emp.birthday = this.formatDate(row.birthday);

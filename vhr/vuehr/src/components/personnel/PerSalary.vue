@@ -28,17 +28,25 @@
         <el-form :model="tableData" ref="addEmpForm">
           <el-row>
 
-              <el-form-item label="员工姓名" prop="name">
-                <!--<el-input v-model="tableData.name" prefix-icon="el-icon-edit"  style="width: 50%":disabled="disState"></el-input>-->
-                <el-select v-model="tableData.name" placeholder="请选择">
-                  <el-option v-for="item in userList":key="item.id":label="item.name":value="item.id":disabled="disState">
-
+              <el-form-item label="员工姓名" prop="eid">
+                <el-select v-model="tableData.eid" style="width: 50%" placeholder="请选择姓名":disabled="disState">
+                  <el-option
+                    v-for="item in userList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
                   </el-option>
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="调薪时间" >
-                  <el-date-picker type="date" placeholder="选择日期" v-model="tableData.ssDate" style="width: 50%":disabled="disState"></el-date-picker>
+              <el-form-item label="调薪时间" prop="asDate">
+                  <el-date-picker v-model="tableData.asDate"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    style="width: 50%"
+                                    placeholder="选择日期"
+                                   :disabled="disState">
+                  </el-date-picker>
               </el-form-item>
 
 
@@ -93,11 +101,13 @@
           remark:'',
           asDate:''
         },
-        userList:{
-          name:'',
-          id:''
+        rules:{
+          asDate: [{required: true, message: '必填:调薪日期', trigger: 'blur'}]
         }
       }
+    },
+    mounted:function () {
+      this.loadSalary();
     },
     methods: {
       tableRowClassName({row, rowIndex}) {
@@ -116,7 +126,13 @@
           if (resp && resp.status == 200) {
             var data = resp.data;
             _this.tableDatas = data.dataTable;
-            console.log(data.dataTable);
+          }
+        })
+        this.getRequest("/employee/user/list").then(resp=> {
+          //this.tableLoading = false;
+          if (resp && resp.status == 200) {
+            var data = resp.data;
+            _this.userList = data.userList;
           }
         })
       },
@@ -124,10 +140,11 @@
         console.log(value);
       },
       showTableContent(row){
+        console.log(row);
         this.tableData=row;
         this.tableData.name=row.name;
         this.tableData.reason=row.reason;
-        this.tableData.ssDate=row.asDate;
+        this.tableData.asDate=this.formatDate(row.asDate);
         this.tableData.afterSalary=row.afterSalary;
         this.tableData.beforeSalary=row.beforeSalary;
         this.dialogVisible = true;
@@ -138,7 +155,7 @@
         this.tableData=row;
         this.tableData.name=row.name;
         this.tableData.reason=row.reason;
-        this.tableData.ssDate=row.asDate;
+        this.tableData.asDate=this.formatDate(row.asDate);
         this.tableData.afterSalary=row.afterSalary;
         this.tableData.beforeSalary=row.beforeSalary;
         this.dialogVisible = true;
@@ -151,6 +168,7 @@
         this.dialogVisible=true;
         this.disState=false;
         this.playState="";
+
       },
       addTableContent(formName){
         var _this = this;
@@ -170,11 +188,10 @@
             } else {
               //添加
               this.tableLoading = true;
-              this.postRequest("/salary/adjust/add", this.emp).then(resp=> {
+              this.postRequest("/salary/adjust/add", this.tableData).then(resp=> {
                 _this.tableLoading = false;
                 if (resp && resp.status == 200) {
                   var data = resp.data;
-
                   _this.dialogVisible = false;
                   _this.loadSalary();
                 }
@@ -185,9 +202,7 @@
           }
         });
       }
-    },
-    mounted:function () {
-      this.loadSalary();
     }
+
   }
 </script>

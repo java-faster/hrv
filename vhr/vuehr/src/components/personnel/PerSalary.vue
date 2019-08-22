@@ -2,7 +2,7 @@
   <div>
   <el-container>
     <el-header  style="text-align: left; font-size: 30px ;align-items: center;padding: 0px" >
-      <el-button type="primary" size="mini" icon="el-icon-plus"  @click="addTableContent">添加</el-button>
+      <el-button type="primary" size="mini" icon="el-icon-plus"  @click="addemp">添加</el-button>
       <el-button type="success" size="mini"  icon="el-icon-download"  @click="dialogVisible = true">导出</el-button>
       <el-button type="success" size="mini"  icon="el-icon-upload"  @click="dialogVisible = true">导入</el-button>
     </el-header>
@@ -17,7 +17,7 @@
         <el-table-column fixed="right" label="操作" width="150">
           <template slot-scope="scope">
             <el-button @click="showTableContent(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button @click="editTableContent(scope.row)" type="text" size="small">编辑</el-button>
             <el-button type="text" size="small" style="color: red">删除</el-button>
           </template>
         </el-table-column>
@@ -25,28 +25,33 @@
     </el-main>
   </el-container>
     <el-dialog title="调薪明细" :visible.sync="dialogVisible" width="50%" >
-        <el-form :model="tableData" >
+        <el-form :model="tableData" ref="addEmpForm">
           <el-row>
 
               <el-form-item label="员工姓名" prop="name">
-                <el-input v-model="tableData.name" prefix-icon="el-icon-edit"  style="width: 50%":disabled="true"></el-input>
+                <!--<el-input v-model="tableData.name" prefix-icon="el-icon-edit"  style="width: 50%":disabled="disState"></el-input>-->
+                <el-select v-model="tableData.name" placeholder="请选择">
+                  <el-option v-for="item in userList":key="item.id":label="item.name":value="item.id":disabled="disState">
+
+                  </el-option>
+                </el-select>
               </el-form-item>
 
               <el-form-item label="调薪时间" >
-                  <el-date-picker type="date" placeholder="选择日期" v-model="tableData.ssDate" style="width: 50%"></el-date-picker>
+                  <el-date-picker type="date" placeholder="选择日期" v-model="tableData.ssDate" style="width: 50%":disabled="disState"></el-date-picker>
               </el-form-item>
 
 
           <el-form-item label="调前薪资">
-            <el-input v-model="tableData.beforeSalary":disabled="true" style="width: 50%"></el-input>
+            <el-input v-model="tableData.beforeSalary" style="width: 50%":disabled="disState"></el-input>
           </el-form-item>
 
           <el-form-item label="调后薪资" >
-            <el-input v-model="tableData.afterSalary"  style="width: 50%" ></el-input>
+            <el-input v-model="tableData.afterSalary"  style="width: 50%":disabled="disState"></el-input>
           </el-form-item>
 
             <el-form-item label="调整原因" >
-              <el-input  type="textarea"   v-model="tableData.reason"  style="width: 50%" ></el-input>
+              <el-input  type="textarea"   v-model="tableData.reason"  style="width: 50%":disabled="disState"></el-input>
             </el-form-item>
 
       </el-row>
@@ -54,7 +59,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addTableContent('addEmpForm')":style="{display:playState}">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -73,7 +78,10 @@
     data() {
       return {
         tableDatas: [],
+        userList:[],
+        playState:'',
         dialogVisible: false,
+        disState:false,
         tableLoading:false,
         tableData: {
           name:'',
@@ -84,6 +92,10 @@
           reason:'',
           remark:'',
           asDate:''
+        },
+        userList:{
+          name:'',
+          id:''
         }
       }
     },
@@ -99,7 +111,7 @@
       loadSalary(){
         var _this = this;
         this.tableLoading = true;
-        this.getRequest("salary/adjust/list").then(resp=> {
+        this.getRequest("/salary/adjust/list").then(resp=> {
           this.tableLoading = false;
           if (resp && resp.status == 200) {
             var data = resp.data;
@@ -119,11 +131,59 @@
         this.tableData.afterSalary=row.afterSalary;
         this.tableData.beforeSalary=row.beforeSalary;
         this.dialogVisible = true;
-
+        this.disState=true;
+        this.playState="none";
       },
-      addTableContent(){
-        this.tableData="";
+      editTableContent(row){
+        this.tableData=row;
+        this.tableData.name=row.name;
+        this.tableData.reason=row.reason;
+        this.tableData.ssDate=row.asDate;
+        this.tableData.afterSalary=row.afterSalary;
+        this.tableData.beforeSalary=row.beforeSalary;
         this.dialogVisible = true;
+        this.disState=false;
+        this.playState="";
+        //this.playState="none";
+      },
+      addemp(){
+        this.tableData="";
+        this.dialogVisible=true;
+        this.disState=false;
+        this.playState="";
+      },
+      addTableContent(formName){
+        var _this = this;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            if (this.tableData.id) {
+              //更新
+              this.tableLoading = true;
+              this.postRequest("/salary/adjust/update", this.tableData).then(resp=> {
+                _this.tableLoading = false;
+                if (resp && resp.status == 200) {
+                  var data = resp.data;
+                  _this.dialogVisible = false;
+                  _this.loadSalary();
+                }
+              })
+            } else {
+              //添加
+              this.tableLoading = true;
+              this.postRequest("/salary/adjust/add", this.emp).then(resp=> {
+                _this.tableLoading = false;
+                if (resp && resp.status == 200) {
+                  var data = resp.data;
+
+                  _this.dialogVisible = false;
+                  _this.loadSalary();
+                }
+              })
+            }
+          } else {
+            return false;
+          }
+        });
       }
     },
     mounted:function () {

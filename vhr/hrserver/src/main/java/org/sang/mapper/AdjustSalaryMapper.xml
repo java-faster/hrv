@@ -6,4 +6,38 @@
     <select id="queryAllAdjustSalaryList" resultType="org.sang.bean.AdjustSalary">
         select * from adjustsalary a,employee e where a.eid=e.id;
     </select>
+    <update id="updateAdjustSalaryMapper" >
+        update adjustsalary
+        <set>
+            <if test="adjust.eid != null">
+                eid = #{adjust.eid,jdbcType=INTEGER},
+            </if>
+            <if test="adjust.asDate != null">
+                asDate = #{adjust.asDate,jdbcType=DATE},
+            </if>
+            <if test="adjust.beforeSalary != null">
+                beforeSalary = #{adjust.beforeSalary,jdbcType=INTEGER},
+            </if>
+            <if test="adjust.afterSalary != null">
+                afterSalary = #{adjust.afterSalary,jdbcType=INTEGER},
+            </if>
+            <if test="adjust.reason != null">
+                reason = #{adjust.reason,jdbcType=INTEGER},
+            </if>
+            <if test="adjust.remark != null">
+                remark = #{adjust.remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{adjust.id,jdbcType=BIGINT}
+    </update>
+    <insert id="addAdjustSalaryMapper">
+        insert into adjustsalary (eid, asDate,
+        beforeSalary, afterSalary, reason, remark)
+        values
+        <foreach collection="adjust" item="emp" separator=",">
+            (#{emp.eid,jdbcType=INTEGER}, #{emp.asDate,jdbcType=DATE},
+            #{emp.beforeSalary,jdbcType=INTEGER}, #{emp.afterSalary,jdbcType=INTEGER}, #{emp.reason,jdbcType=VARCHAR},
+            #{emp.remark,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

@@ -1,6 +1,7 @@
 package org.sang.controller.salary;
 
 import org.sang.bean.AdjustSalary;
+import org.sang.bean.RespBean;
 import org.sang.service.AdjustSalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,5 +35,20 @@ public class SalaryAdjustController {
         List<AdjustSalary> allList=adjustSalaryService.getAllAdjustSalaryList();
         map.put("dataTable",allList);
         return map;
+    }
+
+    @RequestMapping(value = "update",method = RequestMethod.POST)
+    public RespBean updateAdjust(AdjustSalary as){
+        if(adjustSalaryService.updateAdjustSalary(as)==1){
+            return RespBean.ok("更新成功");
+        };
+        return RespBean.error("更新失败");
+    }
+
+    @RequestMapping(value = "add",method = RequestMethod.POST)
+    public RespBean addAdjust(AdjustSalary as){
+        adjustSalaryService.addAdjustSalary(as);
+        return RespBean.ok("新增成功");
+
     }
 }

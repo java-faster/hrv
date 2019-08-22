@@ -1,5 +1,6 @@
 package org.sang.bean;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -11,8 +12,10 @@ import java.util.Date;
 
 public class AdjustSalary {
 
+    @NotBlank(message = "id不能为空")
     private int id;
 
+    @NotBlank(message = "用户id不能为空")
     private int eid;
 
     private Date asDate;

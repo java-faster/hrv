@@ -35,4 +35,21 @@ public class AdjustSalaryServiceImpl implements AdjustSalaryService {
         }
         return orginList;
     }
+
+    @Override
+    public int updateAdjustSalary(AdjustSalary as) {
+        int id=as.getId();
+        int flag=0;
+            if(id==0||"".equals(id+"")){
+                return 0;
+            }else{
+                flag=adjustSalaryMapper.updateAdjustSalaryMapper(as);
+            }
+        return flag;
+    }
+
+    @Override
+    public void addAdjustSalary(AdjustSalary as) {
+
+    }
 }

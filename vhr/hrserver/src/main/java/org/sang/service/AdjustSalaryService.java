@@ -10,4 +10,8 @@ import java.util.List;
 public interface AdjustSalaryService {
 
     List<AdjustSalary> getAllAdjustSalaryList();
+
+    int updateAdjustSalary(AdjustSalary as);
+
+    void addAdjustSalary(AdjustSalary as);
 }

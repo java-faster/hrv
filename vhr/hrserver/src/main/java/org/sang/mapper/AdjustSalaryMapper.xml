@@ -30,14 +30,17 @@
         </set>
         where id = #{adjust.id,jdbcType=BIGINT}
     </update>
-    <insert id="addAdjustSalaryMapper">
+    <insert id="addAdjustSalaryMapper" parameterType="org.sang.bean.AdjustSalary">
         insert into adjustsalary (eid, asDate,
         beforeSalary, afterSalary, reason, remark)
         values
-        <foreach collection="adjust" item="emp" separator=",">
-            (#{emp.eid,jdbcType=INTEGER}, #{emp.asDate,jdbcType=DATE},
-            #{emp.beforeSalary,jdbcType=INTEGER}, #{emp.afterSalary,jdbcType=INTEGER}, #{emp.reason,jdbcType=VARCHAR},
-            #{emp.remark,jdbcType=VARCHAR})
-        </foreach>
+
+            (#{eid,jdbcType=INTEGER}, #{asDate,jdbcType=DATE},
+            #{beforeSalary,jdbcType=INTEGER}, #{afterSalary,jdbcType=INTEGER}, #{reason,jdbcType=VARCHAR},
+            #{remark,jdbcType=VARCHAR})
+
     </insert>
+    <delete id="deleteAdjustSalaryMapper" parameterType="java.lang.Integer">
+        delete from adjustsalary where id= #{id}
+    </delete>
 </mapper>

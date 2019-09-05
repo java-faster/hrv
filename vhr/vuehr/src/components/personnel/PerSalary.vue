@@ -18,14 +18,15 @@
           <template slot-scope="scope">
             <el-button @click="showTableContent(scope.row)" type="text" size="small">查看</el-button>
             <el-button @click="editTableContent(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small" style="color: red">删除</el-button>
+            <el-button type="text" size="small" @click="deleteEmp(scope.row)" style="color: red">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-main>
   </el-container>
-    <el-dialog title="调薪明细" :visible.sync="dialogVisible" width="50%" >
-        <el-form :model="tableData" ref="addEmpForm">
+   <el-form :model="tableData" :rules="rules" ref="addEmpForm">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" >
+
           <el-row>
 
               <el-form-item label="员工姓名" prop="eid">
@@ -50,7 +51,7 @@
               </el-form-item>
 
 
-          <el-form-item label="调前薪资">
+          <el-form-item label="调前薪资" prop="beforeSalary">
             <el-input v-model="tableData.beforeSalary" style="width: 50%":disabled="disState"></el-input>
           </el-form-item>
 
@@ -64,12 +65,13 @@
 
       </el-row>
 
-      </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addTableContent('addEmpForm')":style="{display:playState}">确 定</el-button>
       </div>
     </el-dialog>
+    </el-form>
   </div>
 </template>
 <style>
@@ -88,6 +90,7 @@
         tableDatas: [],
         userList:[],
         playState:'',
+        dialogTitle: '',
         dialogVisible: false,
         disState:false,
         tableLoading:false,
@@ -102,11 +105,12 @@
           asDate:''
         },
         rules:{
-          asDate: [{required: true, message: '必填:调薪日期', trigger: 'blur'}]
+          asDate: [{required: true, message: '必填:调薪日期', trigger: 'blur'}],
+          eid: [{required: true, message: '必填:员工姓名', trigger: 'blur'}]
         }
       }
     },
-    mounted:function () {
+    created:function () {
       this.loadSalary();
     },
     methods: {
@@ -140,7 +144,8 @@
         console.log(value);
       },
       showTableContent(row){
-        console.log(row);
+
+        this.dialogTitle="调薪明细";
         this.tableData=row;
         this.tableData.name=row.name;
         this.tableData.reason=row.reason;
@@ -152,6 +157,7 @@
         this.playState="none";
       },
       editTableContent(row){
+        this.dialogTitle="编辑调薪";
         this.tableData=row;
         this.tableData.name=row.name;
         this.tableData.reason=row.reason;
@@ -163,8 +169,37 @@
         this.playState="";
         //this.playState="none";
       },
+      deleteEmp(row){
+        this.$confirm('此操作将永久删除[' + row.name + '], 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.doDelete(row.id);
+        }).catch(() => {
+        });
+      },
+      doDelete(ids){
+        this.tableLoading = true;
+        var _this = this;
+        this.tableData.id=ids;
+        this.postRequest("/salary/adjust/delete",this.tableData).then(resp=> {
+          _this.tableLoading = false;
+          if (resp && resp.status == 200) {
+            var data = resp.data;
+            _this.loadSalary();
+          }
+        })
+      },
       addemp(){
-        this.tableData="";
+        this.dialogTitle="新增调薪";
+        this.tableData.id="";
+        this.tableData.eid="";
+        this.tableData.name="";
+        this.tableData.reason="";
+        this.tableData.asDate="";
+        this.tableData.afterSalary="";
+        this.tableData.beforeSalary="";
         this.dialogVisible=true;
         this.disState=false;
         this.playState="";

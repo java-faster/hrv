@@ -14,4 +14,6 @@ public interface AdjustSalaryService {
     int updateAdjustSalary(AdjustSalary as);
 
     void addAdjustSalary(AdjustSalary as);
+
+    void deleteAdjustSalary(int id);
 }

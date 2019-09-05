@@ -11,5 +11,7 @@ public interface AdjustSalaryMapper {
 
     int updateAdjustSalaryMapper(@Param("adjust") AdjustSalary as);
 
-    void addAdjustSalaryMapper(@Param("adjust") AdjustSalary as);
+    void addAdjustSalaryMapper(AdjustSalary as);
+
+    void deleteAdjustSalaryMapper(int id);
 }

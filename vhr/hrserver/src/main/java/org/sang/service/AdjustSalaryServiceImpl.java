@@ -50,6 +50,11 @@ public class AdjustSalaryServiceImpl implements AdjustSalaryService {
 
     @Override
     public void addAdjustSalary(AdjustSalary as) {
+        adjustSalaryMapper.addAdjustSalaryMapper(as);
+    }
 
+    @Override
+    public void deleteAdjustSalary(int id) {
+        adjustSalaryMapper.deleteAdjustSalaryMapper(id);
     }
 }
